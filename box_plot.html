@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
+<style>
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
+.grid path {
+  stroke-width: 0;
+}
+</style>
+
 <script src="https://d3js.org/d3.v4.js"></script>
 
 <div id="graph_div"></div>
@@ -33,7 +44,16 @@ d3.csv("https://raw.githubusercontent.com/peterkabai/d3JS/master/csv/iris.csv", 
       interQuantileRange = q3 - q1
       min = q1 - 1.5 * interQuantileRange
       max = q3 + 1.5 * interQuantileRange
-      return({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
+	  counts = d.length
+      return({
+		  q1: q1, 
+		  median: median, 
+		  q3: q3, 
+		  interQuantileRange: interQuantileRange, 
+		  min: min, 
+		  max: max,
+		  counts: counts
+		})
     })
     .entries(data)
 
@@ -105,6 +125,19 @@ svg
     .attr("r", 4)
     .style("fill", "white")
     .attr("stroke", "black")
+
+// add the total count 
+var padding_between_count_and_axis = 5
+svg
+  .selectAll("totalText")
+  .data(sumstat)
+  .enter()
+  .append("text")
+    .text(counts)
+	.attr("x", function(d){return(x(d.key))})
+	.attr("y", height-padding_between_count_and_axis)
+	.attr("text-anchor", "middle")
+
 })
 
 </script>
